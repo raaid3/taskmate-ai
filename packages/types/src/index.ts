@@ -1,8 +1,10 @@
 import { z } from "zod";
 
 export const TodoItemSchema = z.object({
-  date: z.date(),
+  dateTime: z.date(),
   description: z.string(),
+  duration: z.number(),
+  recurring: z.boolean(),
 });
 
 export type TodoItem = z.infer<typeof TodoItemSchema>;
