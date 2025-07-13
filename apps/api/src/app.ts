@@ -1,8 +1,15 @@
 import express from "express";
+import cors from "cors";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { appRouter } from "./trpc/router.js";
 const app = express();
 const PORT = 3000;
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Adjust this to your client app's URL
+  })
+);
 
 app.get("/", (req, res) => {
   res.send("Hello !");

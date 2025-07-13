@@ -1,9 +1,15 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { TodoForm } from "./components/TodoForm";
+// import { TodoForm } from "./components/TodoForm";
+import Test from "./components/Test";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./utils/trpc";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <TodoForm />
+    <QueryClientProvider client={queryClient}>
+      {/* <TodoForm /> */}
+      <Test />
+    </QueryClientProvider>
   </StrictMode>
 );
