@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const TodoItemSchema = z.object({
-  dateTime: z.date(),
+  dateTime: z.string(),
   description: z.string(),
   duration: z.number(),
   recurring: z.boolean(),
