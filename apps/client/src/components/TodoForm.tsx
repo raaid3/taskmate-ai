@@ -1,4 +1,4 @@
-import { TodoItemSchema, type TodoItem } from "@repo/types";
+import { type TodoItemCreate, TodoItemCreateSchema } from "@repo/types";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -9,26 +9,30 @@ interface TodoFormProps {
 
 export default function TodoForm({ onSubmitted }: TodoFormProps) {
   const addTodoMutation = useMutation(
-    trpc.addTodo.mutationOptions({
+    trpc.todos.addTodo.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: trpc.getTodos.queryKey() });
+        queryClient.invalidateQueries({
+          queryKey: trpc.todos.getTodos.queryKey(),
+        });
       },
     })
   );
 
+  // Init form with default values and validation schema
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<TodoItem>({
-    resolver: zodResolver(TodoItemSchema),
+  } = useForm<TodoItemCreate>({
+    resolver: zodResolver(TodoItemCreateSchema),
     defaultValues: {
-      recurring: false,
+      isRecurring: true,
     },
   });
 
-  const onSubmit: SubmitHandler<TodoItem> = async (data) => {
+  // handle form submission
+  const onSubmit: SubmitHandler<TodoItemCreate> = async (data) => {
     try {
       console.debug("Form submitting with data:", data);
       await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -38,6 +42,10 @@ export default function TodoForm({ onSubmitted }: TodoFormProps) {
         onSubmitted();
       }
     } catch (error) {
+      reset();
+      if (onSubmitted) {
+        onSubmitted();
+      }
       console.error("Error submitting form:", error);
     }
   };
@@ -51,15 +59,16 @@ export default function TodoForm({ onSubmitted }: TodoFormProps) {
           </h2>
           <div>
             <label
-              htmlFor="dateTime"
+              htmlFor="title"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Date & Time
+              Title
             </label>
             <input
-              type="datetime-local"
-              id="dateTime"
-              {...register("dateTime")}
+              type="text"
+              id="title"
+              {...register("title")}
+              placeholder="Title of your todo"
               required={true}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
@@ -71,8 +80,7 @@ export default function TodoForm({ onSubmitted }: TodoFormProps) {
             >
               Description
             </label>
-            <input
-              type="text"
+            <textarea
               id="description"
               {...register("description")}
               placeholder="What needs to be done?"
@@ -81,42 +89,34 @@ export default function TodoForm({ onSubmitted }: TodoFormProps) {
           </div>
           <div>
             <label
-              htmlFor="duration"
+              htmlFor="startDateTime"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Duration (min)
+              Start Date & Time
             </label>
             <input
-              type="number"
-              id="duration"
-              {...register("duration", { valueAsNumber: true })}
-              min="0"
+              type="datetime-local"
+              id="startDateTime"
+              {...register("startDateTime", {
+                setValueAs: (val) => (val ? new Date(val) : null),
+              })}
               required={true}
-              onKeyDown={(e) => {
-                const allowedKeys = [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "4",
-                  "5",
-                  "6",
-                  "7",
-                  "8",
-                  "9",
-                  "Backspace",
-                  "Delete",
-                  "Tab",
-                  "ArrowLeft",
-                  "ArrowRight",
-                  "ArrowUp",
-                  "ArrowDown",
-                ];
-                if (!allowedKeys.includes(e.key)) {
-                  e.preventDefault();
-                }
-              }}
-              placeholder="30"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="endDateTime"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              End Date & Time
+            </label>
+            <input
+              type="datetime-local"
+              id="endDateTime"
+              {...register("endDateTime", {
+                setValueAs: (val) => (val ? new Date(val) : null),
+              })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -124,7 +124,7 @@ export default function TodoForm({ onSubmitted }: TodoFormProps) {
             <input
               type="checkbox"
               id="recurring"
-              {...register("recurring")}
+              {...register("isRecurring")}
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
             />
             <label
@@ -141,6 +141,7 @@ export default function TodoForm({ onSubmitted }: TodoFormProps) {
               </p>
             ))}
           </div>
+
           <button
             type="submit"
             className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors ${

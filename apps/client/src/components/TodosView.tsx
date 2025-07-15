@@ -2,7 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { trpc } from "../utils/trpc";
 
 export default function TodosView() {
-  const { data, isLoading, error } = useQuery(trpc.getTodos.queryOptions());
+  const { data, isLoading, error } = useQuery(
+    trpc.todos.getTodos.queryOptions()
+  );
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -13,9 +15,9 @@ export default function TodosView() {
       <ul>
         {data?.map((todo, i) => (
           <li key={i}>
-            <p>{todo.description}</p>
-            <p>Duration: {todo.duration} minutes</p>
-            <p>Date: {todo.dateTime}</p>
+            <h2 className="font-bold">{todo.title}</h2>
+            <p>Description: {todo.description} minutes</p>
+            <p>Date: {todo.startDateTime.toISOString()}</p>
           </li>
         ))}
       </ul>
