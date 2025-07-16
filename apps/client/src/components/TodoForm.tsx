@@ -35,7 +35,6 @@ export default function TodoForm({ onSubmitted }: TodoFormProps) {
   const onSubmit: SubmitHandler<TodoItemCreate> = async (data) => {
     try {
       console.debug("Form submitting with data:", data);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       await addTodoMutation.mutateAsync(data);
       reset();
       if (onSubmitted) {
