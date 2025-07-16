@@ -1,18 +1,14 @@
 import { type TodoItem } from "@repo/types";
+import { PrismaClient } from "../generated/prisma/index.js";
 
-const todos: TodoItem[] = [
-  {
-    dateTime: new Date().toISOString(),
-    description: "Sample Todo Item",
-    duration: 30,
-    recurring: false,
-  },
-];
+const prisma = new PrismaClient();
 
-export function addTodo(todo: TodoItem) {
-  todos.push(todo);
+export async function addTodo(todo: Omit<TodoItem, "id">) {
+  await prisma.todoItem.create({
+    data: todo,
+  });
 }
 
-export function getTodos() {
-  return todos;
+export async function getTodos() {
+  return await prisma.todoItem.findMany();
 }
