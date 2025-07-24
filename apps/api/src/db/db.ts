@@ -3,12 +3,29 @@ import { PrismaClient } from "../generated/prisma/index.js";
 
 const prisma = new PrismaClient();
 
+type NullAsUndefined<T> = {
+  [P in keyof T]: T[P] extends null ? undefined : T[P];
+};
+
+function sanitizeTodoItem<T extends Record<string, any>>(
+  item: T
+): NullAsUndefined<T> {
+  const result: Record<string, any> = { ...item };
+  for (const key in result) {
+    if (result[key] === null) {
+      result[key] = undefined;
+    }
+  }
+  return result as NullAsUndefined<T>;
+}
+
 export async function addTodo(todo: Omit<TodoItem, "id">) {
-  await prisma.todoItem.create({
+  return await prisma.todoItem.create({
     data: todo,
   });
 }
 
 export async function getTodos() {
-  return await prisma.todoItem.findMany();
+  const todos = await prisma.todoItem.findMany();
+  return todos.map(sanitizeTodoItem);
 }

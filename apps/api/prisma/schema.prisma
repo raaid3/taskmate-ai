@@ -16,19 +16,20 @@ datasource db {
 
 model User {
   id    Int        @id @default(autoincrement())
-  email String     @unique
   name  String?
   todos TodoItem[]
 }
 
 model TodoItem {
-  id             Int       @id @default(autoincrement())
-  title          String
-  description    String?
-  startDateTime  DateTime
-  endDateTime    DateTime?
-  isRecurring    Boolean   @default(false)
-  recurrenceRule String?
-  author         User      @relation(fields: [authorId], references: [id])
-  authorId       Int
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  type        String
+  start       String?
+  end         String?
+  daysOfWeek  String[]
+  startTime   String?
+  endTime     String?
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    Int
 }

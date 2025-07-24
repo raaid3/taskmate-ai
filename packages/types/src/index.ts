@@ -30,7 +30,7 @@ export const EventSchema = z.discriminatedUnion("type", [
 export const TodoItemSchema = z
   .object({
     id: z.number().int(),
-    authorId: z.number().int().optional(),
+    authorId: z.number().int(),
   })
   .and(EventSchema);
 

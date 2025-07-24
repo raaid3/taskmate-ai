@@ -1,8 +1,6 @@
 import { type TodoItemCreate, TodoItemCreateSchema } from "@repo/types";
 import { useForm, type SubmitHandler, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { trpc, queryClient } from "../utils/trpc";
 import EventTimeFields from "./EventTimeFields";
 
 interface TodoFormProps {
@@ -13,17 +11,6 @@ interface TodoFormProps {
 }
 
 export default function TodoForm({ onSubmitted, addTodo }: TodoFormProps) {
-  // Mutation for adding a new todo
-  const addTodoMutation = useMutation(
-    trpc.todos.addTodo.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: trpc.todos.getTodos.queryKey(),
-        });
-      },
-    })
-  );
-
   // Mutation for editing an existing todo
   // ...
 
@@ -133,11 +120,6 @@ export default function TodoForm({ onSubmitted, addTodo }: TodoFormProps) {
                   {field}: {error?.message || "Invalid value"}
                 </p>
               ))}
-              {addTodoMutation.error && (
-                <p className="text-red-500">
-                  Mutation error: {addTodoMutation.error.message}
-                </p>
-              )}
             </div>
             <button
               type="submit"
