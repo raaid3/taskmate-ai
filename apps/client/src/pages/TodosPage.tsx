@@ -2,39 +2,16 @@
 import Calendar from "../components/Calendar";
 import TodoForm from "../components/TodoForm";
 import Button from "@repo/ui/button";
+import LogoutButton from "../components/LogoutButton";
 import { useState } from "react";
 import { type TodoItem, type TodoItemCreate } from "@repo/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc, queryClient } from "../utils/trpc";
-// const testEvents: TodoItem[] = [
-//   {
-//     id: 1,
-//     authorId: 1,
-//     title: "Sample Todo",
-//     description: "This is a sample todo item",
-//     type: "simple",
-//     start: new Date().toISOString(),
-//     end: new Date(new Date().getTime() + 3600000).toISOString(),
-//   },
-//   {
-//     id: 2,
-//     authorId: 1,
-//     title: "Recurring Todo",
-//     description: "This is a recurring todo item",
-//     type: "recurring",
-//     daysOfWeek: ["1", "3", "5"],
-//     startTime: "09:00",
-//     endTime: "10:00",
-//   },
-// ];
-
+import { useAuth0 } from "@auth0/auth0-react";
 export default function TodosPage() {
   const [showForm, setShowForm] = useState(false);
-  // const [events, setEvents] = useState<TodoItem[] | null>(null);
-  // test states (temporary)
-  // const [loading, setLoading] = useState(true);
   const queryUtils = useQuery(trpc.todos.getTodos.queryOptions());
-
+  const { isAuthenticated } = useAuth0();
   const { data }: { data: TodoItem[] | undefined } = queryUtils;
   const { isLoading, error } = queryUtils;
 
@@ -50,23 +27,8 @@ export default function TodosPage() {
   );
 
   async function addTodo(item: TodoItemCreate) {
-    // if (!events) return;
-
     await addTodoMutation.mutateAsync(item);
-
-    // setEvents([...events, newEvent]);
   }
-
-  // // fetch events here
-  // // ...
-  // // const { data, isLoading, error } = trpc.todo.getAll.useQuery();
-  // useEffect(() => {
-  //   // Simulate fetching events
-  //   setTimeout(() => {
-  //     setEvents(testEvents);
-  //     setLoading(false);
-  //   }, 1000);
-  // }, []);
 
   if (error) {
     return <p>Error loading todos: {error.message}</p>;
@@ -74,6 +36,7 @@ export default function TodosPage() {
 
   return (
     <div>
+      {isAuthenticated && <LogoutButton />}
       <h1>Todos Page</h1>
       {isLoading ? (
         <p>Loading...</p>

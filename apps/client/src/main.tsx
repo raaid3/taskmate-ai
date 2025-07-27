@@ -1,13 +1,19 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import TodosPage from "./pages/TodosPage";
+import App from "./App";
+import Auth0WithProvider from "./components/Auth0WithProvider";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./utils/trpc";
+import { BrowserRouter } from "react-router";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <TodosPage />
-    </QueryClientProvider>
+    <BrowserRouter>
+      <Auth0WithProvider>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </Auth0WithProvider>
+    </BrowserRouter>
   </StrictMode>
 );
