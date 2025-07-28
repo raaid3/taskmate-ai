@@ -1,4 +1,4 @@
-import { router, publicProcedure } from "../trpc.js";
+import { router, publicProcedure, protectedProcedure } from "../trpc.js";
 import * as db from "../../db/db.js";
 import {
   type TodoItem,
@@ -8,33 +8,18 @@ import {
 } from "@repo/types";
 
 export const todosRouter = router({
-  getTodos: publicProcedure.output(TodoItemSchema.array()).query(async () => {
-    const todos = (await db.getTodos()) as TodoItem[];
+  getTodos: protectedProcedure
+    .output(TodoItemSchema.array())
+    .query(async ({ ctx }) => {
+      console.log("Fetching todos for user:", ctx.user.sub);
+      const todos = (await db.getTodos(ctx.user.sub)) as TodoItem[];
+      return todos;
+    }),
 
-    // set of daysOfWeek from empty array to undefined
-    // since empty daysOfWeek array will break calendar
-    return todos.map((todo) => {
-      if (todo.type === "simple") {
-        if (
-          "daysOfWeek" in todo &&
-          (todo.daysOfWeek as string[]).length === 0
-        ) {
-          return {
-            ...todo,
-            daysOfWeek: undefined,
-          };
-        }
-      }
-      return todo;
-    });
-  }),
-
-  addTodo: publicProcedure
+  addTodo: protectedProcedure
     .input(TodoItemCreateSchema)
-    .mutation(async ({ input }: { input: TodoItemCreate }) => {
-      // add authorId to input
-      // sample authorId for now
-      const inputWithAuthId = { ...input, authorId: 1 };
+    .mutation(async ({ input, ctx }) => {
+      const inputWithAuthId = { ...input, authorId: ctx.user.sub };
 
       const newTodo = await db.addTodo(inputWithAuthId);
       return newTodo as TodoItem;

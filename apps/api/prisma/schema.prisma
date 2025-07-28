@@ -15,9 +15,9 @@ datasource db {
 }
 
 model User {
-  id    Int        @id @default(autoincrement())
-  name  String?
-  todos TodoItem[]
+  id       String     @id
+  username String?
+  todos    TodoItem[]
 }
 
 model TodoItem {
@@ -31,5 +31,5 @@ model TodoItem {
   startTime   String?
   endTime     String?
   author      User     @relation(fields: [authorId], references: [id])
-  authorId    Int
+  authorId    String
 }

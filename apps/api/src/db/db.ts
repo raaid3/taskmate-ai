@@ -1,11 +1,7 @@
 import { type TodoItem } from "@repo/types";
 import { PrismaClient } from "../generated/prisma/index.js";
-
+import type { NullAsUndefined } from "@repo/types";
 const prisma = new PrismaClient();
-
-type NullAsUndefined<T> = {
-  [P in keyof T]: T[P] extends null ? undefined : T[P];
-};
 
 function sanitizeTodoItem<T extends Record<string, any>>(
   item: T
@@ -13,6 +9,12 @@ function sanitizeTodoItem<T extends Record<string, any>>(
   const result: Record<string, any> = { ...item };
   for (const key in result) {
     if (result[key] === null) {
+      result[key] = undefined;
+    } else if (
+      key === "daysOfWeek" &&
+      Array.isArray(result[key]) &&
+      result[key].length === 0
+    ) {
       result[key] = undefined;
     }
   }
@@ -25,7 +27,11 @@ export async function addTodo(todo: Omit<TodoItem, "id">) {
   });
 }
 
-export async function getTodos() {
-  const todos = await prisma.todoItem.findMany();
+export async function getTodos(userId: string) {
+  const todos = await prisma.todoItem.findMany({
+    where: {
+      authorId: userId,
+    },
+  });
   return todos.map(sanitizeTodoItem);
 }
