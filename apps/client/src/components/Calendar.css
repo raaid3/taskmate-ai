@@ -1,0 +1,26 @@
+
+.fc-event {
+  background: linear-gradient(45deg, #673ffa, #8a2be2) !important;
+  border-radius: 8px !important;
+}
+
+
+.fc-event {
+  color: white !important;
+}
+
+
+.fc-event-title,
+.fc-event-time {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.fc {
+  font-family: "Sans-serif", Arial, sans-serif;
+  font-size: 0.9em;
+}
+
+.fc-daygrid-event-dot {
+  background-color: #FFFF !important;
+}
