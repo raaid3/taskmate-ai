@@ -8,7 +8,6 @@ import Callback from "./pages/Callback";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
 import Loader from "./components/Loader";
-
 export default function App() {
   const { isLoading, isAuthenticated } = useAuth0();
   const location = useLocation();
@@ -23,8 +22,8 @@ export default function App() {
   return (
     <div className="bg-gray-900 min-h-screen">
       {showNavbar && (
-        <header className="sticky top-0 z-50 p-4">
-          <div className="w-[95%] max-w-4xl mx-auto">
+        <header className="sticky top-0 z-50 px-4 pt-4 md:px-8 md:pt-8">
+          <div className="w-[95%] max-w-2xl mx-auto">
             <Navbar />
           </div>
         </header>

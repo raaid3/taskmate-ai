@@ -1,19 +1,24 @@
 
 .fc-event {
   background: linear-gradient(45deg, #673ffa, #8a2be2) !important;
-  border-radius: 8px !important;
 }
 
+.fc-timegrid-event-harness-inset .fc-timegrid-event, .fc-timegrid-event.fc-event-mirror, .fc-timegrid-more-link {
+  box-shadow: 0 0 0 2px var(--fc-page-bg-color) !important;
+}
 
 .fc-event {
   color: white !important;
 }
 
+.fc-v-event {
+  border: none;
+}
 
 .fc-event-title,
 .fc-event-time {
-  font-size: 1.1em;
-  font-weight: bold;
+  /* font-size: 1.1em;
+  font-weight: bold; */
 }
 
 .fc {
@@ -22,5 +27,6 @@
 }
 
 .fc-daygrid-event-dot {
-  background-color: #FFFF !important;
+  /* background-color: #FFFF !important; */
+  border-color: #002b81 !important;
 }

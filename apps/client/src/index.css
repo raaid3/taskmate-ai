@@ -1,5 +1,6 @@
 @-moz-document url-prefix() {
-  .backdrop-blur-md {
+
+  .backdrop-blur-md{
     --tw-backdrop-blur: none;
     backdrop-filter: none !important;
   }

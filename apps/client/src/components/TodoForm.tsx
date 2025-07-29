@@ -40,7 +40,7 @@ export default function TodoForm({ onSubmitted, addTodo }: TodoFormProps) {
   };
 
   return (
-    <div className="w-full max-w-md bg-gray-700/50 backdrop-blur-md p-8 rounded-2xl shadow-lg text-white">
+    <div className="w-full max-w-md bg-gray-700 backdrop-blur-md p-8 rounded-2xl shadow-lg text-white">
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <fieldset disabled={isSubmitting}>
