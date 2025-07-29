@@ -13,7 +13,7 @@ const Auth0ProviderWithNavigate = ({
   const redirectUri = window.location.origin + "/callback/";
 
   const onRedirectCallback = (appState: AppState | undefined) => {
-    navigate(appState?.returnTo || window.location.pathname);
+    navigate(appState?.returnTo || window.location.pathname, { replace: true });
   };
 
   if (!(domain && clientId && redirectUri)) {

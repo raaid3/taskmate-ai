@@ -6,7 +6,9 @@ export type NullAsUndefined<T> = {
 
 // Base schema with common fields
 const BaseEventSchema = z.object({
-  title: z.string({ message: "Title is required" }),
+  title: z
+    .string({ message: "Title is required" })
+    .min(1, { message: "Title is required" }),
   description: z.string().optional(),
 });
 

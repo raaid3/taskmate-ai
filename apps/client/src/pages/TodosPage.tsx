@@ -1,30 +1,34 @@
-// import type { TodoItem } from "@repo/types";
 import Calendar from "../components/Calendar";
 import TodoForm from "../components/TodoForm";
-import Button from "@repo/ui/button";
-import LogoutButton from "../components/LogoutButton";
+import Button from "@repo/ui/components/button";
 import { useState } from "react";
 import { type TodoItem, type TodoItemCreate } from "@repo/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc, queryClient } from "../utils/trpc";
-import { useAuth0 } from "@auth0/auth0-react";
+import AIAssistant from "../components/AIAssistant";
+import { Plus } from "lucide-react";
+
 export default function TodosPage() {
   const [showForm, setShowForm] = useState(false);
-  const queryUtils = useQuery(trpc.todos.getTodos.queryOptions());
-  const { isAuthenticated } = useAuth0();
-  const { data }: { data: TodoItem[] | undefined } = queryUtils;
-  const { isLoading, error } = queryUtils;
+  const { data, isLoading, error } = useQuery(
+    trpc.todos.getTodos.queryOptions()
+  );
 
-  // mutation for adding a new todo
   const addTodoMutation = useMutation(
     trpc.todos.addTodo.mutationOptions({
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: trpc.todos.getTodos.queryKey(), // invalidate the todos query
+          queryKey: trpc.todos.getTodos.queryKey(),
         });
       },
     })
   );
+
+  function onEscapeKeyDown(event: React.KeyboardEvent) {
+    if (event.key === "Escape") {
+      setShowForm(false);
+    }
+  }
 
   async function addTodo(item: TodoItemCreate) {
     await addTodoMutation.mutateAsync(item);
@@ -35,24 +39,39 @@ export default function TodosPage() {
   }
 
   return (
-    <div>
-      {isAuthenticated && <LogoutButton />}
-      <h1>Todos Page</h1>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <>
-          <Calendar events={data!} />
-          <Button onClick={() => setShowForm(true)}>Add Todo</Button>
-        </>
-      )}
+    <div className="min-h-screen bg-gray-900 text-white p-4 md:p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg">
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <Calendar events={(data as TodoItem[]) || []} />
+          )}
+        </div>
+
+        <div className="flex flex-col gap-8">
+          <AIAssistant />
+          <Button onClick={() => setShowForm(true)}>
+            <div className="flex items-center justify-center gap-2">
+              <Plus />
+              <span>Add Event</span>
+            </div>
+          </Button>
+        </div>
+      </div>
 
       {showForm && (
-        <TodoForm
-          onSubmitted={() => setShowForm(false)}
-          addTodo={addTodo}
-          type="create"
-        />
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+          tabIndex={0}
+          onKeyDown={onEscapeKeyDown}
+        >
+          <TodoForm
+            onSubmitted={() => setShowForm(false)}
+            addTodo={addTodo}
+            type="create"
+          />
+        </div>
       )}
     </div>
   );

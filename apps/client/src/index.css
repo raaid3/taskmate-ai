@@ -1,2 +1,9 @@
+@-moz-document url-prefix() {
+  .backdrop-blur-md {
+    --tw-backdrop-blur: none;
+    backdrop-filter: none !important;
+  }
+}
+
 @import "tailwindcss";
 @source "../node_modules/@repo/ui";

@@ -21,6 +21,8 @@
     "@tanstack/react-query": "^5.83.0",
     "@trpc/client": "^11.4.3",
     "@trpc/tanstack-react-query": "^11.4.3",
+    "lucide-react": "^0.532.0",
+    "ogl": "^1.0.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.60.0",

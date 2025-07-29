@@ -1,3 +1,5 @@
+import { Navigate } from "react-router";
+
 export default function Callback() {
-  return <div>Loading...</div>;
+  return <Navigate to="/todos" replace />;
 }
