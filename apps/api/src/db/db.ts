@@ -1,37 +1,45 @@
-import { type TodoItem } from "@repo/types";
+import {
+  type TodoItem,
+  type DistributiveOmit,
+  TodoItemSchema,
+} from "@repo/types";
 import { PrismaClient } from "../generated/prisma/index.js";
-import type { NullAsUndefined } from "@repo/types";
 const prisma = new PrismaClient();
-
-function sanitizeTodoItem<T extends Record<string, any>>(
-  item: T
-): NullAsUndefined<T> {
-  const result: Record<string, any> = { ...item };
-  for (const key in result) {
-    if (result[key] === null) {
-      result[key] = undefined;
-    } else if (
-      key === "daysOfWeek" &&
-      Array.isArray(result[key]) &&
-      result[key].length === 0
-    ) {
-      result[key] = undefined;
-    }
-  }
-  return result as NullAsUndefined<T>;
-}
-
-export async function addTodo(todo: Omit<TodoItem, "id">) {
-  return await prisma.todoItem.create({
+export async function addTodo(
+  todo: DistributiveOmit<TodoItem, "id">
+): Promise<TodoItem> {
+  const res = await prisma.todoItem.create({
     data: todo,
   });
+  return TodoItemSchema.parse(res);
 }
 
-export async function getTodos(userId: string) {
+export async function getTodos(userId: string): Promise<TodoItem[]> {
   const todos = await prisma.todoItem.findMany({
     where: {
       authorId: userId,
     },
   });
-  return todos.map(sanitizeTodoItem);
+  return TodoItemSchema.array().parse(todos);
+}
+
+export async function deleteTodo(id: number, userId: string) {
+  await prisma.todoItem.delete({
+    where: {
+      id: id,
+      authorId: userId,
+    },
+  });
+}
+
+export async function updateTodo(todoItem: TodoItem): Promise<TodoItem> {
+  const { id, authorId, ...newTodo } = todoItem;
+  const res = await prisma.todoItem.update({
+    where: {
+      id,
+      authorId,
+    },
+    data: newTodo,
+  });
+  return TodoItemSchema.parse(res);
 }

@@ -6,22 +6,34 @@ import {
   type TodoItemCreate,
   TodoItemCreateSchema,
 } from "@repo/types";
+import { z } from "zod";
 
 export const todosRouter = router({
-  getTodos: protectedProcedure
-    .output(TodoItemSchema.array())
-    .query(async ({ ctx }) => {
-      console.log("Fetching todos for user:", ctx.user.sub);
-      const todos = (await db.getTodos(ctx.user.sub)) as TodoItem[];
-      return todos;
-    }),
+  getTodos: protectedProcedure.query(async ({ ctx }): Promise<TodoItem[]> => {
+    console.log("Fetching todos for user:", ctx.user.id);
+    const todos = await db.getTodos(ctx.user.id);
+    return todos;
+  }),
 
   addTodo: protectedProcedure
     .input(TodoItemCreateSchema)
-    .mutation(async ({ input, ctx }) => {
-      const inputWithAuthId = { ...input, authorId: ctx.user.sub };
+    .mutation(async ({ input, ctx }): Promise<TodoItem> => {
+      const inputWithAuthId = { ...input, authorId: ctx.user.id };
 
       const newTodo = await db.addTodo(inputWithAuthId);
-      return newTodo as TodoItem;
+      return newTodo;
+    }),
+
+  deleteTodo: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      console.log("Deleting todo with ID:", input.id, "for user:", ctx.user.id);
+      await db.deleteTodo(input.id, ctx.user.id);
+    }),
+
+  updateTodo: protectedProcedure
+    .input(TodoItemSchema)
+    .mutation(async ({ input }): Promise<TodoItem> => {
+      return await db.updateTodo(input);
     }),
 });

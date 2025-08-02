@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 import { User } from "@repo/types"; // Import the User type
 import "dotenv/config";
+import { UserSchema } from "@repo/types";
+import { z } from "zod";
 // created for each request
 export const createContext = async ({
   req,
@@ -43,13 +45,22 @@ export const createContext = async ({
     return { user: null };
   }
 
-  const user = await new Promise<User | null>((resolve) => {
-    jwt.verify(token, getKey, { algorithms: ["RS256"] }, (err, decoded) => {
-      if (err) return resolve(null);
-      resolve(decoded as User);
-    });
+  const user = await new Promise<z.infer<typeof UserSchema> | null>(
+    (resolve) => {
+      jwt.verify(token, getKey, { algorithms: ["RS256"] }, (err, decoded) => {
+        if (err) return resolve(null);
+        resolve(UserSchema.parse(decoded));
+      });
+    }
+  ).catch((err) => {
+    console.log("Error parsing JWT payload:", err);
+    return null;
   });
 
-  return { user };
+  if (!user) {
+    return { user: null };
+  } else {
+    return { user: { id: user.sub, username: user.name } };
+  }
 };
 export type Context = Awaited<ReturnType<typeof createContext>>;
