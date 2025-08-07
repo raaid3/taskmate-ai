@@ -14,37 +14,42 @@ export const assistantRouter = router({
     )
     .mutation(async ({ input, ctx }): Promise<string> => {
       // debug
-      console.log("Rescheduling todos for user:", ctx.user.id);
+      try {
+        console.log("Rescheduling todos for user:", ctx.user.id);
 
-      const { userPrompt } = input;
-      const userEvents = await db.getTodos(ctx.user.id);
-      console.log("User events:", userEvents);
-      const response = await rescheduleEvents(
-        userPrompt,
-        userEvents,
-        ctx.user.id,
-        input.currentDateTime
-      );
-      console.log("AI response:", response);
-      const updatedTodos = response.rescheduled_events;
+        const { userPrompt } = input;
+        const userEvents = await db.getTodos(ctx.user.id);
+        console.log("User events:", userEvents);
+        const response = await rescheduleEvents(
+          userPrompt,
+          userEvents,
+          ctx.user.id,
+          input.currentDateTime
+        );
+        console.log("AI response:", response);
+        const updatedTodos = response.rescheduled_events;
 
-      // Update each todo in the database
-      for (const todo of updatedTodos) {
-        await updateTodo(todo);
+        // Update each todo in the database
+        for (const todo of updatedTodos) {
+          await updateTodo(todo);
+        }
+
+        // Add new events to the database
+        for (const newTodo of response.new_events) {
+          const { id, ...todoWithoutId } = newTodo;
+          await addTodo(todoWithoutId);
+        }
+
+        // Delete specified events
+        for (const deleteId of response.delete_events) {
+          await deleteTodo(deleteId, ctx.user.id);
+        }
+
+        // return response;
+        return response.reason;
+      } catch (error) {
+        console.error("Error in rescheduleTodos:", error);
+        return "An error occurred while rescheduling, please try again later.";
       }
-
-      // Add new events to the database
-      for (const newTodo of response.new_events) {
-        const { id, ...todoWithoutId } = newTodo;
-        await addTodo(todoWithoutId);
-      }
-
-      // Delete specified events
-      for (const deleteId of response.delete_events) {
-        await deleteTodo(deleteId, ctx.user.id);
-      }
-
-      // return response;
-      return response.reason;
     }),
 });

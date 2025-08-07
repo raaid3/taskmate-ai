@@ -35,8 +35,6 @@ export default function AIAssistant() {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     try {
-      // Call your API to handle the AI request here
-      console.log("User prompt submitted:", data.userPrompt);
       const res = await rescheduleMutation.mutateAsync({
         ...data,
         currentDateTime: new Date(
@@ -45,12 +43,12 @@ export default function AIAssistant() {
           .toISOString()
           .slice(0, -5), // Convert to local ISO format without timezone
       });
-      console.log("AI response:", res);
       setAiResponse(res);
-      // Reset the form or handle success
       reset();
-    } catch (error) {
-      console.error("Error submitting AI prompt:", error);
+    } catch {
+      setAiResponse(
+        "An error occurred while processing your request. Please try again."
+      );
       reset();
     }
   };
