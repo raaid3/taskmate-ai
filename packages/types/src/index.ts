@@ -3,27 +3,45 @@ import { z } from "zod";
 // Base schema with common fields
 const BaseEventSchema = z.object({
   title: z
-    .string({ message: "Title is required" })
-    .min(1, { message: "Title is required" }),
+    .string("Title: title must be a string")
+    .min(1, "Title: title is required"),
   description: z.string().optional(),
 });
 
 export const SimpleEventSchema = BaseEventSchema.extend({
-  type: z.literal("simple"),
-  start: z.iso.datetime({ local: true }),
-  end: z.iso.datetime({ local: true }).or(z.literal("")).optional(),
+  type: z.literal("simple", "Event type: must be 'simple'"),
+  start: z.iso.datetime({
+    local: true,
+    error: "Start Date & Time: must be a valid ISO datetime string (required)",
+  }),
+  end: z.iso
+    .datetime({
+      local: true,
+      error:
+        "End Date & Time: must be a valid ISO datetime string or an empty string",
+    })
+    .or(z.literal(""))
+    .optional(),
 });
 
 export const RecurringEventSchema = BaseEventSchema.extend({
-  type: z.literal("recurring"),
+  type: z.literal("recurring", "Event type: must be 'recurring'"),
   daysOfWeek: z
     .array(
-      z.enum(["0", "1", "2", "3", "4", "5", "6"], { error: "Invalid day" }),
-      "Select at least one day of the week"
+      z.enum(
+        ["0", "1", "2", "3", "4", "5", "6"],
+        "Recurring days: must be a valid day (0-6)"
+      ),
+      "Recurring days: at least one day must be selected"
     )
-    .min(1, { message: "Select at least one day of the week" }),
-  startTime: z.iso.time(),
-  endTime: z.iso.time().or(z.literal("")).optional(),
+    .min(1, "Recurring days: at least one day must be selected"),
+  startTime: z.iso.time(
+    "Start time: must be a valid ISO time string (required)"
+  ),
+  endTime: z.iso
+    .time("End time: must be a valid ISO time string or an empty string")
+    .or(z.literal(""))
+    .optional(),
 });
 
 export const EventSchema = z.discriminatedUnion("type", [

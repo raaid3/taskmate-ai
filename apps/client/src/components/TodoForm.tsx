@@ -109,7 +109,7 @@ export default function TodoForm({ onSubmitted, addTodo }: TodoFormProps) {
               <div className="text-red-400 text-sm mt-2">
                 {Object.entries(errors).map(([field, error]) => (
                   <p key={field} className="text-red-400">
-                    {field}: {error?.message || "Invalid value"}
+                    {error?.message || "Invalid value"}
                   </p>
                 ))}
               </div>
