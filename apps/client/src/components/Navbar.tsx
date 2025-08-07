@@ -22,7 +22,7 @@ export default function Navbar() {
       blur={0}
       displace={5}
       borderRadius={50}
-      className="shadow-lg"
+      className="shadow-lg pointer-events-auto"
     >
       <nav className="w-full bg-transparent px-2 md:px-4 rounded-full">
         <div className="flex items-center justify-between">

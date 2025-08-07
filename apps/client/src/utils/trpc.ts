@@ -14,7 +14,7 @@ const trpcClient = createTRPCClient<AppRouter>({
         (opts.direction === "down" && opts.result instanceof Error),
     }),
     httpBatchLink({
-      url: "http://localhost:3000/trpc",
+      url: import.meta.env.VITE_API_URL,
       transformer: superjson,
       headers: async () => {
         console.log("Setting headers for TRPC client...");

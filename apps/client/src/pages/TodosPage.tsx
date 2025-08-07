@@ -6,7 +6,7 @@ import { type TodoItemCreate } from "@repo/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc, queryClient } from "../utils/trpc";
 import AIAssistant from "../components/AIAssistant";
-import { Plus } from "lucide-react";
+import { AlertCircle, Plus } from "lucide-react";
 
 export default function TodosPage() {
   const [showForm, setShowForm] = useState(false);
@@ -35,7 +35,19 @@ export default function TodosPage() {
   }
 
   if (error) {
-    return <p>Error loading todos: {error.message}</p>;
+    return (
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-lg mx-4 my-4 shadow-lg flex items-center gap-4">
+        <AlertCircle className="w-10 h-10" />
+        <div>
+          <h1 className="font-bold text-xl mb-1">
+            Uh-oh! Something went awry!
+          </h1>
+          <p>
+            There was an error loading your calendar. Please try again later.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (

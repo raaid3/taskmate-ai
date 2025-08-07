@@ -22,7 +22,7 @@ export default function App() {
   return (
     <div className="bg-gray-900 min-h-screen">
       {showNavbar && (
-        <header className="sticky top-0 z-50 px-4 pt-4 md:px-8 md:pt-8">
+        <header className="sticky top-0 z-50 px-4 pt-4 md:px-8 md:pt-8 pointer-events-none">
           <div className="w-[95%] max-w-2xl mx-auto">
             <Navbar />
           </div>
