@@ -6,7 +6,6 @@ import { type TodoItem } from "@repo/types";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import "./Calendar.css";
-
 interface CalendarProps {
   events: TodoItem[];
 }

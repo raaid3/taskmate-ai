@@ -2,7 +2,7 @@ import Calendar from "../components/Calendar";
 import TodoForm from "../components/TodoForm";
 import Button from "@repo/ui/components/button";
 import { useState } from "react";
-import { type TodoItem, type TodoItemCreate } from "@repo/types";
+import { type TodoItemCreate } from "@repo/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc, queryClient } from "../utils/trpc";
 import AIAssistant from "../components/AIAssistant";
@@ -42,11 +42,7 @@ export default function TodosPage() {
     <div className="min-h-screen bg-gray-900 text-white p-4 md:p-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg">
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <Calendar events={(data as TodoItem[]) || []} />
-          )}
+          {isLoading ? <p>Loading...</p> : <Calendar events={data || []} />}
         </div>
 
         <div className="flex flex-col gap-8">

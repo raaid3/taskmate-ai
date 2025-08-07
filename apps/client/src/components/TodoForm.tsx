@@ -116,7 +116,7 @@ export default function TodoForm({ onSubmitted, addTodo }: TodoFormProps) {
             )}
 
             <div className="pt-4">
-              <Button onClick={handleSubmit(onSubmit)}>
+              <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
                 {isSubmitting ? "Creating..." : "Create Event"}
               </Button>
             </div>
