@@ -3,10 +3,9 @@ import { type TodoItem, type DistributiveOmit, type User } from "@repo/types";
 import { testUser1 } from "./test-data/users";
 import { seed, cleanup } from "./seed";
 const user = testUser1;
-let caller = todosRouter.createCaller({ user: user });
+const caller = todosRouter.createCaller({ user: user });
 describe("Todos Router", () => {
   beforeAll(async () => {
-    caller = todosRouter.createCaller({ user: user });
     await seed();
   });
 
