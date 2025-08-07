@@ -76,6 +76,13 @@ export interface PrismaReturnType {
   authorId: string;
 }
 
+export const AssistantResponseFormat = z.object({
+  rescheduled_events: z.array(TodoItemSchema),
+  reason: z.string(),
+  new_events: z.array(TodoItemSchema),
+  delete_events: z.array(z.int()),
+});
+
 export type SimpleEvent = z.infer<typeof SimpleEventSchema>;
 export type RecurringEvent = z.infer<typeof RecurringEventSchema>;
 export type Event = SimpleEvent | RecurringEvent;
@@ -85,3 +92,9 @@ export type User = z.infer<typeof UserSchema>;
 export type DistributiveOmit<T, K extends keyof any> = T extends any
   ? Omit<T, K>
   : never;
+export type AssistantResponse = {
+  rescheduled_events: TodoItem[];
+  reason: string;
+  new_events: TodoItem[];
+  delete_events: number[];
+};
