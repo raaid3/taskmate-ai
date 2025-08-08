@@ -1,4 +1,4 @@
-import { PrismaClient } from "../generated/prisma/index.js";
+import { PrismaClient } from "@prisma/client";
 import { testUser1 } from "../tests/test-data/users.js";
 import { todoItem1, todoItem2 } from "../tests/test-data/todos.js";
 
