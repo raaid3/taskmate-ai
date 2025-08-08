@@ -2,7 +2,7 @@ import { type TodoItemCreate, TodoItemCreateSchema } from "@repo/types";
 import { useForm, type SubmitHandler, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EventTimeFields from "./EventTimeFields";
-import Button from "@repo/ui/components/button";
+import Button from "./Button.tsx";
 
 interface TodoFormProps {
   onSubmitted?: () => void;
@@ -116,7 +116,7 @@ export default function TodoForm({ onSubmitted, addTodo }: TodoFormProps) {
             )}
 
             <div className="pt-4">
-              <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Creating..." : "Create Event"}
               </Button>
             </div>

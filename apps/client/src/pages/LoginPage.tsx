@@ -1,7 +1,7 @@
 import Iridescence from "@repo/ui/backgrounds/Iridescence";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Navigate } from "react-router";
-import Button from "@repo/ui/components/button";
+import Button from "../components/Button.tsx";
 // import { useEffect, useLayoutEffect } from "react";
 export default function LoginPage() {
   const { loginWithRedirect, isAuthenticated } = useAuth0();
