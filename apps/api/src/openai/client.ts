@@ -1,5 +1,4 @@
 import { AzureOpenAI } from "openai";
-import type { ChatCompletionMessageParam } from "openai/resources";
 import { config } from "dotenv";
 import {
   type TodoItem,
@@ -7,7 +6,7 @@ import {
   type AssistantResponse,
 } from "@repo/types";
 import { z } from "zod";
-import { minimalPrompt, originalPrompt } from "./prompts";
+import { minimalPrompt } from "./prompts.js";
 config();
 const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
 const apiKey = process.env.AZURE_OPENAI_API_KEY;

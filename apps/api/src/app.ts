@@ -6,12 +6,8 @@ import { createContext } from "./trpc/context.js";
 import "dotenv/config";
 const app = express();
 const PORT = 3000;
-
-app.use(
-  cors({
-    origin: process.env.ALLOWED_ORIGINS?.split(","),
-  })
-);
+console.log("Allowed origins: ", process.env.ALLOWED_ORIGINS);
+app.use(cors({ origin: process.env.ALLOWED_ORIGINS?.split(",") }));
 
 app.get("/ping", (req, res) => {
   res.send("PONG");

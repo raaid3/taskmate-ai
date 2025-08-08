@@ -1,7 +1,7 @@
-import { todosRouter } from "../trpc/routes/todos";
+import { todosRouter } from "../trpc/routes/todos.js";
 import { type TodoItem, type DistributiveOmit, type User } from "@repo/types";
-import { testUser1 } from "./test-data/users";
-import { seed, cleanup } from "./seed";
+import { testUser1 } from "./test-data/users.js";
+import { seed, cleanup } from "./seed.js";
 const user = testUser1;
 const caller = todosRouter.createCaller({ user: user });
 describe("Todos Router", () => {

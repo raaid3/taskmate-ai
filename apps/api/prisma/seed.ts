@@ -1,6 +1,6 @@
 import { PrismaClient } from "../src/generated/prisma/index.js";
-import { testUser1 } from "../src/tests/test-data/users";
-import { todoItem1, todoItem2 } from "../src/tests/test-data/todos";
+import { testUser1 } from "../src/tests/test-data/users.js";
+import { todoItem1, todoItem2 } from "../src/tests/test-data/todos.js";
 
 export async function seed() {
   const prisma = new PrismaClient();

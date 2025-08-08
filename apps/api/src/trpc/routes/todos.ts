@@ -1,9 +1,8 @@
-import { router, publicProcedure, protectedProcedure } from "../trpc.js";
+import { router, protectedProcedure } from "../trpc.js";
 import * as db from "../../db/db.js";
 import {
   type TodoItem,
   TodoItemSchema,
-  type TodoItemCreate,
   TodoItemCreateSchema,
 } from "@repo/types";
 import { z } from "zod";

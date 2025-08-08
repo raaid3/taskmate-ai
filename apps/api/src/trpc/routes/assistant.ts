@@ -1,7 +1,6 @@
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure } from "../trpc.js";
 import * as db from "../../db/db.js";
-import { rescheduleEvents } from "../../openai/client";
-import { type AssistantResponse } from "@repo/types";
+import { rescheduleEvents } from "../../openai/client.js";
 import { z } from "zod";
 import { updateTodo, addTodo, deleteTodo } from "../../db/db.js";
 export const assistantRouter = router({

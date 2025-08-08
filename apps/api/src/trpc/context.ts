@@ -1,14 +1,12 @@
 import * as trpcExpress from "@trpc/server/adapters/express";
 import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
-import { User } from "@repo/types"; // Import the User type
 import "dotenv/config";
 import { UserSchema } from "@repo/types";
 import { z } from "zod";
 // created for each request
 export const createContext = async ({
   req,
-  res,
 }: trpcExpress.CreateExpressContextOptions) => {
   const client = jwksClient({
     jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
