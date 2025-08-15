@@ -70,15 +70,22 @@ export default function TodosPage() {
 
       {showForm && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 overflow-scroll"
           tabIndex={0}
           onKeyDown={onEscapeKeyDown}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowForm(false);
+            }
+          }}
         >
-          <TodoForm
-            onSubmitted={() => setShowForm(false)}
-            addTodo={addTodo}
-            type="create"
-          />
+          <div className="max-h-[80vh] overflow-scroll rounded-2xl">
+            <TodoForm
+              onSubmitted={() => setShowForm(false)}
+              addTodo={addTodo}
+              type="create"
+            />
+          </div>
         </div>
       )}
     </div>

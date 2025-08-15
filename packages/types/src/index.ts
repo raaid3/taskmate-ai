@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RRule } from "rrule/dist/esm/index.js";
 
 // Base schema with common fields
 const BaseEventSchema = z.object({
@@ -116,3 +117,28 @@ export type AssistantResponse = {
   new_events: TodoItem[];
   delete_events: number[];
 };
+
+export const rruleStringSchema = z.string().refine(
+  (val) => {
+    try {
+      RRule.fromString(val);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  {
+    message: "Invalid rrule string",
+  }
+);
+
+// new types and schemas to be incrementally adopted
+export const NewRecurringEventSchema = z.object({
+  startDate: z.iso.date("Not a valid date"),
+  endDate: z.iso.date("Not a valid date").optional(),
+  startTime: z.iso.time("Not a valid time"),
+  endTime: z.iso.time("Not a valid time"),
+  rrule: rruleStringSchema,
+});
+
+export * from "./todo-form-validation/form-schema.js";
