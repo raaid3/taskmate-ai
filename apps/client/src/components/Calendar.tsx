@@ -2,12 +2,13 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { type TodoItem } from "@repo/types";
+import rrulePlugin from "@fullcalendar/rrule";
+import { type FullCalendarEvent } from "@repo/types";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import "./Calendar.css";
 interface CalendarProps {
-  events: TodoItem[];
+  events: FullCalendarEvent[];
 }
 
 export default function Calendar({ events }: CalendarProps) {
@@ -15,9 +16,14 @@ export default function Calendar({ events }: CalendarProps) {
     <>
       <FullCalendar
         headerToolbar={{ center: "dayGridMonth,timeGridWeek" }}
-        plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+        plugins={[
+          rrulePlugin,
+          timeGridPlugin,
+          dayGridPlugin,
+          interactionPlugin,
+        ]}
         initialView="timeGridWeek"
-        events={events!.map((e) => ({ ...e, id: e.id.toString() }))} // make id a string for FullCalendar
+        events={events}
         nowIndicator={true}
         eventDidMount={(info) => {
           info.el.setAttribute("data-tooltip-id", "fc-event-tooltip");

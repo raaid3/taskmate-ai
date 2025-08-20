@@ -6,6 +6,7 @@ import EventTimeFields from "./EventTimeFields";
 import Button from "@repo/ui/components/button";
 import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
+import { RRule } from "rrule";
 
 interface TodoFormProps {
   onSubmitted?: () => void;
@@ -14,7 +15,7 @@ interface TodoFormProps {
   addTodo?: (item: TodoItemCreate) => Promise<void>;
 }
 
-export default function TodoForm({ onSubmitted }: TodoFormProps) {
+export default function TodoForm({ onSubmitted, addTodo }: TodoFormProps) {
   const methods = useForm<TodoForm>({
     resolver: zodResolver(TodoFormSchema),
     defaultValues: {
@@ -58,8 +59,46 @@ export default function TodoForm({ onSubmitted }: TodoFormProps) {
 
   const onSubmit: SubmitHandler<TodoForm> = async (data) => {
     try {
-      console.log(`Form Submitted with data: ${data}`);
-      // await addTodo?.(data);
+      console.log(`Form Submitted with data: ${JSON.stringify(data)}`);
+
+      // process data using user's local time zone
+      const localStartDateTime = data.startDate + "T" + data.startTime;
+      const startDateTime = DateTime.fromISO(localStartDateTime)
+        .startOf("minute")
+        .toUTC();
+      const localEndDateTime = data.startDate + "T" + data.endTime;
+      let endDateTime = DateTime.fromISO(localEndDateTime)
+        .startOf("minute")
+        .toUTC();
+      if (endDateTime < startDateTime) {
+        endDateTime = endDateTime.plus({ days: 1 });
+      }
+
+      if (data.type === "simple") {
+        await addTodo?.({
+          type: "simple",
+          title: data.title,
+          description: data.description,
+          startDateTime: startDateTime.toFormat("yyyy-MM-dd'T'HH:mm'Z'"),
+          endDateTime: endDateTime.toFormat("yyyy-MM-dd'T'HH:mm'Z'"),
+        });
+      } else {
+        await addTodo?.({
+          type: "recurring",
+          title: data.title,
+          description: data.description,
+          startDateTime: startDateTime.toFormat("yyyy-MM-dd'T'HH:mm'Z'"),
+          endDateTime: endDateTime.toFormat("yyyy-MM-dd'T'HH:mm'Z'"),
+          rrule: new RRule({
+            freq: RRule.WEEKLY,
+            byweekday: data.daysOfWeek.map((day) => parseInt(day)),
+            until: data.endDate
+              ? DateTime.fromISO(data.endDate).endOf("day").toUTC().toJSDate()
+              : undefined,
+          }).toString(),
+        });
+      }
+
       reset();
       onSubmitted?.();
     } catch (error) {

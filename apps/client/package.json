@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.4.0",
+    "@fullcalendar/core": "^6.1.19",
     "@fullcalendar/daygrid": "^6.1.18",
     "@fullcalendar/interaction": "^6.1.18",
     "@fullcalendar/react": "^6.1.18",
+    "@fullcalendar/rrule": "^6.1.19",
     "@fullcalendar/timegrid": "^6.1.18",
     "@hookform/resolvers": "^5.2.1",
     "@repo/types": "workspace:*",
@@ -31,6 +33,7 @@
     "react-hook-form": "^7.62.0",
     "react-router": "^7.8.0",
     "react-tooltip": "^5.29.1",
+    "rrule": "^2.8.1",
     "superjson": "^2.2.2",
     "tailwindcss": "^4.1.11",
     "zod": "^4.0.16"
