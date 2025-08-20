@@ -47,8 +47,20 @@ export async function rescheduleEvents(
       ],
     });
 
+    if (completion.choices.length === 0) {
+      throw new Error("No response from AI");
+    }
+
+    if (!completion.choices[0]) {
+      throw new Error("No message content in AI response");
+    }
+
+    if (!completion.choices[0].message.content) {
+      throw new Error("No message content in AI response");
+    }
+
     return AssistantResponseFormat.parse(
-      JSON.parse(completion.choices[0]?.message.content!)
+      JSON.parse(completion.choices[0].message.content)
     );
   } catch (error) {
     if (error instanceof z.core.$ZodError) {

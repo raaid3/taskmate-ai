@@ -9,7 +9,7 @@ export default function NotFound() {
       <div className="w-full max-w-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl p-12 shadow-lg flex flex-col items-center">
         <h1 className="text-7xl font-extrabold mb-4">404</h1>
         <p className="text-2xl mb-8">
-          Whoops! Looks like you've wandered off the map.
+          Whoops! Looks like you&apos;ve wandered off the map.
         </p>
         <button
           onClick={() => navigate("/")}

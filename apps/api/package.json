@@ -7,17 +7,20 @@
         "dev": "tsx watch ./src/app.ts",
         "build": "prisma generate && tsc",
         "start": "node ./dist/app.js",
-        "test": "vitest"
+        "test": "vitest",
+        "lint": "eslint ./src/"
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"
     },
     "devDependencies": {
+        "@repo/eslint-config": "workspace:*",
         "@repo/typescript-config": "workspace:*",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.3",
         "@types/jsonwebtoken": "^9.0.10",
         "@types/node": "^22.17.1",
+        "eslint": "^9.33.0",
         "prisma": "^6.13.0",
         "tsx": "^4.20.3",
         "typescript": "^5.9.2",
