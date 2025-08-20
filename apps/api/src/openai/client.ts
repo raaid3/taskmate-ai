@@ -1,7 +1,7 @@
 import { AzureOpenAI } from "openai";
 import { config } from "dotenv";
 import {
-  type TodoItem,
+  type OldTodoItem,
   AssistantResponseFormat,
   type AssistantResponse,
 } from "@repo/types";
@@ -23,7 +23,7 @@ const client = new AzureOpenAI(options);
 
 export async function rescheduleEvents(
   userPrompt: string,
-  userEvents: TodoItem[],
+  userEvents: OldTodoItem[],
   userId: string,
   currentDateTime: string
 ): Promise<AssistantResponse> {

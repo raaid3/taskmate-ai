@@ -1,26 +1,25 @@
 import { router, protectedProcedure } from "../trpc.js";
 import * as db from "../../db/db.js";
 import {
-  type TodoItem,
-  TodoItemSchema,
   TodoItemCreateSchema,
+  type TodoItemCreate,
+  TodoItemSchema,
+  type TodoItem,
 } from "@repo/types";
 import { z } from "zod";
+import { getTodosResolver } from "../resolvers/get-todos-resolver.js";
 
 export const todosRouter = router({
-  getTodos: protectedProcedure.query(async ({ ctx }): Promise<TodoItem[]> => {
-    console.log("Fetching todos for user:", ctx.user.id);
-    const todos = await db.getTodos(ctx.user.id);
-    return todos;
-  }),
+  getTodos: protectedProcedure.query(getTodosResolver),
 
   addTodo: protectedProcedure
     .input(TodoItemCreateSchema)
-    .mutation(async ({ input, ctx }): Promise<TodoItem> => {
+    .mutation(async ({ input, ctx }): Promise<TodoItemCreate> => {
       const inputWithAuthId = { ...input, authorId: ctx.user.id };
 
       const newTodo = await db.addTodo(inputWithAuthId);
-      return newTodo;
+      // console.log(JSON.stringify(input));
+      return input;
     }),
 
   deleteTodo: protectedProcedure

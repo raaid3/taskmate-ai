@@ -62,3 +62,4 @@ export const createContext = async ({
   }
 };
 export type Context = Awaited<ReturnType<typeof createContext>>;
+export type AuthenticatedContext = Exclude<Context, { user: null }>;
