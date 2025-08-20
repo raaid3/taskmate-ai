@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { RRule } from "rrule/dist/esm/index.js";
 
 // Base schema with common fields
 const BaseEventSchema = z.object({
@@ -9,7 +8,7 @@ const BaseEventSchema = z.object({
   description: z.string().optional(),
 });
 
-export const SimpleEventSchema = BaseEventSchema.extend({
+const SimpleEventSchema = BaseEventSchema.extend({
   type: z.literal("simple", "Event type: must be 'simple'"),
   start: z.iso.datetime({
     local: true,
@@ -25,7 +24,7 @@ export const SimpleEventSchema = BaseEventSchema.extend({
     .optional(),
 });
 
-export const RecurringEventSchema = BaseEventSchema.extend({
+const RecurringEventSchema = BaseEventSchema.extend({
   type: z.literal("recurring", "Event type: must be 'recurring'"),
   daysOfWeek: z
     .array(
@@ -45,12 +44,12 @@ export const RecurringEventSchema = BaseEventSchema.extend({
     .optional(),
 });
 
-export const EventSchema = z.discriminatedUnion("type", [
+const EventSchema = z.discriminatedUnion("type", [
   SimpleEventSchema.extend({ type: z.literal("simple") }),
   RecurringEventSchema.extend({ type: z.literal("recurring") }),
 ]);
 
-export const TodoItemSchema = z.preprocess(
+const TodoItemSchema = z.preprocess(
   (val: Record<string, any>) => {
     for (const key in val) {
       if (val[key] === null) {
@@ -73,7 +72,7 @@ export const TodoItemSchema = z.preprocess(
     .and(EventSchema)
 );
 
-export const TodoItemCreateSchema = EventSchema;
+const TodoItemCreateSchema = EventSchema;
 
 export const UserSchema = z.object({
   sub: z.string().describe("Subject (User ID)"),
@@ -102,44 +101,21 @@ export const AssistantResponseFormat = z.object({
   delete_events: z.array(z.int()),
 });
 
-export type SimpleEvent = z.infer<typeof SimpleEventSchema>;
-export type RecurringEvent = z.infer<typeof RecurringEventSchema>;
-export type Event = SimpleEvent | RecurringEvent;
-export type TodoItemCreate = Event;
-export type TodoItem = { id: number; authorId: string } & Event;
+type SimpleEvent = z.infer<typeof SimpleEventSchema>;
+type RecurringEvent = z.infer<typeof RecurringEventSchema>;
+type Event = SimpleEvent | RecurringEvent;
+export type OldTodoItem = { id: number; authorId: string } & Event;
 export type User = z.infer<typeof UserSchema>;
 export type DistributiveOmit<T, K extends keyof any> = T extends any
   ? Omit<T, K>
   : never;
 export type AssistantResponse = {
-  rescheduled_events: TodoItem[];
+  rescheduled_events: OldTodoItem[];
   reason: string;
-  new_events: TodoItem[];
+  new_events: OldTodoItem[];
   delete_events: number[];
 };
 
-export const rruleStringSchema = z.string().refine(
-  (val) => {
-    try {
-      RRule.fromString(val);
-      return true;
-    } catch {
-      return false;
-    }
-  },
-  {
-    message: "Invalid rrule string",
-  }
-);
-
-// new types and schemas to be incrementally adopted
-export const NewRecurringEventSchema = z.object({
-  startDate: z.iso.date("Not a valid date"),
-  endDate: z.iso.date("Not a valid date").optional(),
-  startTime: z.iso.time("Not a valid time"),
-  endTime: z.iso.time("Not a valid time"),
-  rrule: rruleStringSchema,
-});
-
-export * from "./todo-form-validation/form-schema.js";
+export * from "./form-schema.js";
 export * from "./todo-event-schemas.js";
+export * from "./full-calendar-event-schemas.js";

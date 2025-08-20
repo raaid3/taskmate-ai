@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { RRule } from "rrule/dist/esm/index.js";
+import { rruleStringSchema } from "./rrule-schema.js";
 
-const NewBaseSchema = z.object({
+const BaseSchema = z.object({
   id: z.number(),
   authorId: z.string(),
   title: z.string().min(1),
@@ -9,43 +9,39 @@ const NewBaseSchema = z.object({
 });
 
 // schemas used to move todos events around in the backend
-export const NewSimpleEventSchema = z.object({
-  ...NewBaseSchema.shape,
+const SimpleEventSchema = z.object({
+  ...BaseSchema.shape,
   startDateTime: z.iso.datetime({ precision: -1 }),
   endDateTime: z.iso.datetime({ precision: -1 }),
 });
 
-export const rruleStringSchema = z.string().refine(
-  (val) => {
-    try {
-      RRule.fromString(val);
-      return true;
-    } catch {
-      return false;
-    }
-  },
-  {
-    message: "Invalid rrule string",
-  }
-);
-
-export const NewRecurringEventSchema = NewSimpleEventSchema.extend({
+const RecurringEventSchema = SimpleEventSchema.extend({
   rrule: rruleStringSchema,
 });
 
-export const NewTodoItemSchema = z.discriminatedUnion("type", [
-  NewSimpleEventSchema.extend({ type: z.literal("simple") }),
-  NewRecurringEventSchema.extend({ type: z.literal("recurring") }),
-]);
+function preprocessTodoItem(item: Record<string, any>) {
+  return {
+    ...item,
+    description: item.description ? item.description : undefined,
+  };
+}
 
-export const NewTodoItemCreateSchema = z.discriminatedUnion("type", [
-  NewSimpleEventSchema.omit({ id: true, authorId: true }).extend({
+export const TodoItemSchema = z.preprocess(
+  preprocessTodoItem,
+  z.discriminatedUnion("type", [
+    SimpleEventSchema.extend({ type: z.literal("simple") }),
+    RecurringEventSchema.extend({ type: z.literal("recurring") }),
+  ])
+);
+
+export const TodoItemCreateSchema = z.discriminatedUnion("type", [
+  SimpleEventSchema.omit({ id: true, authorId: true }).extend({
     type: z.literal("simple"),
   }),
-  NewRecurringEventSchema.omit({ id: true, authorId: true }).extend({
+  RecurringEventSchema.omit({ id: true, authorId: true }).extend({
     type: z.literal("recurring"),
   }),
 ]);
 
-export type NewTodoItem = z.infer<typeof NewTodoItemSchema>;
-export type NewTodoItemCreate = z.infer<typeof NewTodoItemCreateSchema>;
+export type TodoItem = z.infer<typeof TodoItemSchema>;
+export type TodoItemCreate = z.infer<typeof TodoItemCreateSchema>;
