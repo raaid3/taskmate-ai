@@ -26,3 +26,10 @@ This project utilizes a range of modern technologies to deliver a robust and eff
 - **Frontend:** React, TypeScript, Vite, TanStack React Query, Tailwind CSS, FullCalendar.
 - **Authentication:** Auth0 for login and session management, with JWT validation on the backend.
 - **Testing:** Vitest for unit and integration tests across the stack.
+
+
+## Deployment
+
+- **Frontend:** The frontend is hosted on [Vercel](https://vercel.com/), providing continuous deployment and a global CDN for a fast user experience.
+- **Backend:** The backend API is containerized using a `Dockerfile` and hosted for free on [Hugging Face Spaces](https://huggingface.co/spaces).
+
