@@ -35,7 +35,7 @@ export const assistantRouter = router({
 
         // Add new events to the database
         for (const newTodo of response.new_events) {
-          const { id, ...todoWithoutId } = newTodo;
+          const { id: _id, ...todoWithoutId } = newTodo;
           await addTodo(todoWithoutId);
         }
 
