@@ -59,7 +59,7 @@ export default function TodoForm({ onSubmitted, addTodo }: TodoFormProps) {
 
   const onSubmit: SubmitHandler<TodoForm> = async (data) => {
     try {
-      console.log(`Form Submitted with data: ${JSON.stringify(data)}`);
+      console.debug(`Form Submitted with data: ${JSON.stringify(data)}`);
 
       // process data using user's local time zone
       const localStartDateTime = data.startDate + "T" + data.startTime;

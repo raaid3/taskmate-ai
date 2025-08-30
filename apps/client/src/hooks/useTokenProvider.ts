@@ -7,17 +7,17 @@ export function useTokenProvider() {
 
   useLayoutEffect(() => {
     if (isLoading) {
-      console.log("Auth0 is loading, not setting token provider yet.");
+      console.debug("Auth0 is loading, not setting token provider yet.");
       return;
     }
 
     setTokenProvider(async () => {
       if (!isAuthenticated) {
-        console.log("User is not authenticated, cannot get token.");
+        console.debug("User is not authenticated, cannot get token.");
         return undefined;
       }
       try {
-        console.log("Getting token silently...");
+        console.debug("Getting token silently...");
         return await getAccessTokenSilently();
       } catch (error) {
         console.error("Failed to get access token", error);

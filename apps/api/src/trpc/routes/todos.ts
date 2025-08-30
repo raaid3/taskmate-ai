@@ -19,7 +19,7 @@ export const todosRouter = router({
 
       const newTodo = await db.addTodo(inputWithAuthId);
       // console.log(JSON.stringify(input));
-      return input;
+      return newTodo;
     }),
 
   deleteTodo: protectedProcedure

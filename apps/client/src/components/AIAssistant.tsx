@@ -1,10 +1,11 @@
-import { Bot } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useForm, type SubmitHandler, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { trpc, queryClient } from "../utils/trpc";
 import { useState } from "react";
+import { DateTime } from "luxon";
 const formSchema = z.object({
   userPrompt: z.string().min(1, "Please enter a prompt"),
 });
@@ -37,11 +38,8 @@ export default function AIAssistant() {
     try {
       const res = await rescheduleMutation.mutateAsync({
         ...data,
-        currentDateTime: new Date(
-          Date.now() - new Date().getTimezoneOffset() * 60000
-        )
-          .toISOString()
-          .slice(0, -5), // Convert to local ISO format without timezone
+        currentDateTime: DateTime.now().startOf("minute").toUTC().toString(),
+        userTimeZone: DateTime.now().zoneName,
       });
       setAiResponse(res);
       reset();
@@ -57,7 +55,8 @@ export default function AIAssistant() {
     <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl shadow-lg text-center">
       <h2 className="text-2xl font-bold mb-4">AI Assistant</h2>
       <p className="text-gray-300 mb-6">
-        Ask Taskmate AI to manage your schedule using natural language.
+        Ask Taskmate AI to manage your schedule using natural language. Context
+        does not persist between requests.
       </p>
       <div className="relative">
         <FormProvider {...formMethods}>
@@ -67,13 +66,14 @@ export default function AIAssistant() {
               placeholder='e.g., "Schedule a meeting for tomorrow at 2pm"'
               className="w-full bg-white/10 text-white placeholder-gray-400 px-4 py-3 pr-13 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500"
               {...register("userPrompt")}
+              disabled={isSubmitting}
             />
             <button
               className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full"
               disabled={isSubmitting}
               type="submit"
             >
-              <Bot className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5" />
             </button>
           </form>
         </FormProvider>

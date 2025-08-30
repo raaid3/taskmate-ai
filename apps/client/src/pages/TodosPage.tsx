@@ -25,7 +25,7 @@ function processData(data: TodoItem[]): FullCalendarEvent[] {
     });
   } catch (err) {
     console.error("Error processing data into calendar compatible data: ", err);
-    console.log(`Data being processed: ${JSON.stringify(data, null, 2)}`);
+    console.debug(`Data being processed: ${JSON.stringify(data, null, 2)}`);
     return [];
   }
 }
@@ -88,7 +88,7 @@ export default function TodosPage() {
           <Button onClick={() => setShowForm(true)}>
             <div className="flex items-center justify-center gap-2">
               <Plus />
-              <span>Add Event</span>
+              <span>Add Event Manually</span>
             </div>
           </Button>
         </div>

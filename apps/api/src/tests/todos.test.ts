@@ -23,7 +23,8 @@ describe("Todos Router", () => {
       title: "New TOdo",
       authorId: user.id,
       type: "simple",
-      start: "2023-10-01T10:00:00Z",
+      startDateTime: "2023-10-01T10:00:00Z",
+      endDateTime: "2023-10-01T11:00:00Z",
     };
 
     await caller.addTodo(newTodo);

@@ -18,7 +18,7 @@ const trpcClient = createTRPCClient<AppRouter>({
       url: import.meta.env.VITE_API_URL,
       transformer: superjson,
       headers: async () => {
-        console.log("Setting headers for TRPC client...");
+        console.debug("Setting headers for TRPC client...");
         const token = await getToken();
         if (!token) {
           return {};

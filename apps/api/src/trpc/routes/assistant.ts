@@ -9,6 +9,7 @@ export const assistantRouter = router({
       z.object({
         userPrompt: z.string(),
         currentDateTime: z.iso.datetime({ local: true }),
+        userTimeZone: z.string(),
       })
     )
     .mutation(async ({ input, ctx }): Promise<string> => {
@@ -16,16 +17,17 @@ export const assistantRouter = router({
       try {
         console.log("Rescheduling todos for user:", ctx.user.id);
 
-        const { userPrompt } = input;
+        const { userPrompt, userTimeZone, currentDateTime } = input;
         const userEvents = await db.getTodos(ctx.user.id);
-        console.log("User events:", userEvents);
+        // console.log("User events:", userEvents);
         const response = await rescheduleEvents(
           userPrompt,
           userEvents,
           ctx.user.id,
-          input.currentDateTime
+          currentDateTime,
+          userTimeZone
         );
-        console.log("AI response:", response);
+        // console.log("AI response:", response);
         const updatedTodos = response.rescheduled_events;
 
         // Update each todo in the database

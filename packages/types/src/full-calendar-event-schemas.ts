@@ -48,8 +48,6 @@ export const FcRecurringEventSchema = z.preprocess(
       duration: duration,
     };
 
-    console.log(JSON.stringify(res, null, 2));
-
     return res;
   },
   RecurringEventSchema

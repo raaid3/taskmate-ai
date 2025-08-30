@@ -11,8 +11,8 @@ const BaseSchema = z.object({
 // schemas used to move todos events around in the backend
 const SimpleEventSchema = z.object({
   ...BaseSchema.shape,
-  startDateTime: z.iso.datetime({ precision: -1 }),
-  endDateTime: z.iso.datetime({ precision: -1 }),
+  startDateTime: z.iso.datetime(),
+  endDateTime: z.iso.datetime(),
 });
 
 const RecurringEventSchema = SimpleEventSchema.extend({

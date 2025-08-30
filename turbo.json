@@ -1,7 +1,7 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
-  "globalEnv": ["AUTH0_DOMAIN", "AUTH0_CLIENT_ID", "AUTH0_AUDIENCE", "API_URL", "DATABASE_URL", "AZURE_OPENAI_ENDPOINT", "AZURE_OPENAI_API_KEY", "ALLOWED_ORIGINS", "NODE_ENV", "PORT"],
+  "globalEnv": ["AUTH0_DOMAIN", "AUTH0_CLIENT_ID", "AUTH0_AUDIENCE", "API_URL", "DATABASE_URL", "AZURE_OPENAI_ENDPOINT", "AZURE_OPENAI_API_KEY", "ALLOWED_ORIGINS", "NODE_ENV", "PORT", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "MGMT_CLIENT_ID", "MGMT_CLIENT_SECRET", "MGMT_AUDIENCE"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

@@ -1,12 +1,12 @@
 import { AzureOpenAI } from "openai";
 import { config } from "dotenv";
 import {
-  type OldTodoItem,
+  type TodoItem,
   AssistantResponseFormat,
   type AssistantResponse,
 } from "@repo/types";
 import { z } from "zod";
-import { minimalPrompt } from "./prompts.js";
+import { optimizedPrompt } from "./prompts.js";
 config();
 const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
 const apiKey = process.env.AZURE_OPENAI_API_KEY;
@@ -23,9 +23,10 @@ const client = new AzureOpenAI(options);
 
 export async function rescheduleEvents(
   userPrompt: string,
-  userEvents: OldTodoItem[],
+  userEvents: TodoItem[],
   userId: string,
-  currentDateTime: string
+  currentDateTime: string,
+  userTimeZone: string
 ): Promise<AssistantResponse> {
   try {
     const completion = await client.chat.completions.create({
@@ -33,7 +34,7 @@ export async function rescheduleEvents(
       messages: [
         {
           role: "system",
-          content: minimalPrompt,
+          content: optimizedPrompt,
         },
         {
           role: "user",
@@ -42,6 +43,7 @@ export async function rescheduleEvents(
             userEvents,
             userId,
             currentDateTime,
+            userTimeZone,
           }),
         },
       ],
@@ -58,6 +60,11 @@ export async function rescheduleEvents(
     if (!completion.choices[0].message.content) {
       throw new Error("No message content in AI response");
     }
+
+    console.log(
+      "##### RAW AI RESPONSE",
+      JSON.parse(completion.choices[0].message.content)
+    );
 
     return AssistantResponseFormat.parse(
       JSON.parse(completion.choices[0].message.content)
