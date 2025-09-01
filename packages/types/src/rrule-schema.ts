@@ -7,7 +7,7 @@ export const rruleStringSchema = z.string().refine(
   (val) => {
     try {
       // RRule.fromString(val);
-      if (val.includes("RRULE")) return true;
+      if (typeof val === "string") return true;
       throw new Error("Invalid RRULE");
     } catch (error) {
       console.log(error);
