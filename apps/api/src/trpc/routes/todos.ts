@@ -15,6 +15,7 @@ export const todosRouter = router({
   addTodo: protectedProcedure
     .input(TodoItemCreateSchema)
     .mutation(async ({ input, ctx }): Promise<TodoItemCreate> => {
+      console.log(`Adding todo for user: ${ctx.user.id}`);
       const inputWithAuthId = { ...input, authorId: ctx.user.id };
 
       const newTodo = await db.addTodo(inputWithAuthId);
